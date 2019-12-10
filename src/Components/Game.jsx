@@ -17,7 +17,7 @@ class Game extends React.Component {
             driverGoal: {x: 120, y: 120},
             driverRotation: 0,
 
-            robotArm1Pos: {x: 100, y: 100},
+            robotArm1Pos: {x: 500, y: 500},
             robotArm1Rotation: 0,
             robotArm1RotationGoal: 0,
             windowWidth: 0,
@@ -40,30 +40,44 @@ class Game extends React.Component {
         // TODO: replace this by a REST-API. onMouseDown is only for demo purpose
         this.setState({ driverGoal: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY },
                         driverRotation: Math.atan2(e.nativeEvent.offsetY - this.state.driverPos.y, e.nativeEvent.offsetX - this.state.driverPos.x) + Math.PI / 2,
-                        robotArm1Rotation: Math.atan2(e.nativeEvent.offsetY - this.state.robotArm1Pos.y, e.nativeEvent.offsetX - this.state.robotArm1Pos.x)
+                        robotArm1RotationGoal: (Math.atan2(e.nativeEvent.offsetY - this.state.robotArm1Pos.y, e.nativeEvent.offsetX - this.state.robotArm1Pos.x) + 2*Math.PI) % (2*Math.PI),
                     });
-        console.log('driverPosX: ' + this.state.driverPos.x + ' driverPosY: ' + this.state.driverPos.y);
-        console.log('newGoalX: ' + this.state.driverGoal.x + ' newGoalY: ' + this.state.driverGoal.y + ' direction: ' + this.state.driverRotation);
-
-
+        console.log(this.state);
     }
 
     gameLoop() {
         //console.log('driverPosX: ' + this.state.driverPos.x + ' driverPosY: ' + this.state.driverPos.y);
-        if (!this.goalReached()) {
-            console.log("goal not yet reached, moving into direciton of Goal!");
+        if (!this.driverGoalReached()) {
+            console.log("driverRobot has not yet reached its goal, moving into direciton of goal...");
             const direction = { x: this.state.driverGoal.x - this.state.driverPos.x, y: this.state.driverGoal.y - this.state.driverPos.y }
             this.setState({ driverPos: { x: this.state.driverPos.x + direction.x*0.1, y: this.state.driverPos.y + direction.y*0.1 }})
 
+        } 
+        if (!this.rotationGoalReached()) {
+            console.log("RobotArm has not yet reached its goal, moving arm into direction...");
+            console.log(this.state);
+            if ((this.state.robotArm1RotationGoal > this.state.robotArm1Rotation && this.state.robotArm1RotationGoal - this.state.robotArm1Rotation < Math.PI)
+                || (this.state.robotArm1RotationGoal < this.state.robotArm1Rotation && this.state.robotArm1Rotation - this.state.robotArm1RotationGoal > Math.PI)) {
+                this.setState({ robotArm1Rotation: (this.state.robotArm1Rotation + 0.05) % (2*Math.PI) });
+            } else {
+                var nextRotation = (this.state.robotArm1Rotation - 0.05) % (2*Math.PI);
+                if (nextRotation < 0) {
+                    nextRotation = 2*Math.PI;
+                }
+                this.setState({ robotArm1Rotation: nextRotation});
+            }
         } else {
-            // stop
-            console.log("goal reached.")
+            console.log("robot arm is already at desired rotation : " + this.state.robotArm1Rotation + ' (' + this.state.robotArm1RotationGoal + ')');
         }
     }
 
-    goalReached() {
+    driverGoalReached() {
         return Math.abs(this.state.driverPos.x - this.state.driverGoal.x) < 5 &&
-                Math.abs(this.state.driverPos.y - this.state.driverGoal.y) < 5
+                Math.abs(this.state.driverPos.y - this.state.driverGoal.y) < 5;
+    }
+
+    rotationGoalReached() {
+        return Math.abs(this.state.robotArm1Rotation - this.state.robotArm1RotationGoal) < 0.05;
     }
 
     playerMove(x_new, y_new) {
