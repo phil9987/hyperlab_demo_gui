@@ -11,130 +11,74 @@ class Game extends React.Component {
         super(props);
 
         this.state = {
-            playerX: 100,
-            playerY: 100,
+            playerPos: {x: 100, y: 100},
+            playerGoal: {x: 100, y: 0},
+            playerRotation: 0,
             windowWidth: 0,
             windowHeight: 0,
-            playerMomentum: 0,
-            playerRotation: 0,
-            playerVelocityX: 0,
-            playerVelocityY: 0
         };
 
         this.playerWidth = 50;
         this.playerHeight = 50;
+        this.playerSpeed = 10;
 
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-        this.onKeyDown = this.onKeyDown.bind(this);      
-                
-    }    
 
-    gameLoop() {        
-        const radians = (this.state.playerRotation - 90) * Math.PI / 180;        
-
-        const aX = (this.state.playerMomentum * Math.cos(radians));
-        const aY = (this.state.playerMomentum * Math.sin(radians));
-
-        const velocityX = this.state.playerVelocityX;
-        const velocityY = this.state.playerVelocityY;
-        const velocitySq = Math.pow(velocityX, 2) + Math.pow(velocityY, 2);
-        const posSq = Math.pow(aX, 2) + Math.pow(aY, 2);
-        const velocityPosSq = Math.pow(velocityX * aX + velocityY * aY, 2);
-       
-        let skidFactor = (posSq == 0 || velocitySq == 0) ? 0 : 1 - (velocityPosSq / posSq / velocitySq);
-        if (skidFactor <= 0) skidFactor = 0;
-
-        console.log('skid: ' + skidFactor);
-
-        this.setState({
-            playerVelocityX: (skidFactor * velocityX) + ((1 - skidFactor) * aX),
-            playerVelocityY: (skidFactor * velocityY) + ((1 - skidFactor) * aY)
-        });        
-        this.playerMove(
-            this.state.playerX + this.state.playerVelocityX,
-            this.state.playerY + this.state.playerVelocityY 
-        );
-
-        this.playerDecelerate(-(0.1 + skidFactor));
-        
+    }
+    _onMouseDown(e) {
+        this.setState({ playerGoal: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY },
+                        playerRotation: Math.atan2(e.nativeEvent.offsetY - this.state.playerPos.y, e.nativeEvent.offsetX - this.state.playerPos.x) + Math.PI / 2});
+        console.log('PlayerPosX: ' + this.state.playerPos.x + ' PlayerPosY: ' + this.state.playerPos.y);
+        console.log('newGoalX: ' + this.state.playerGoal.x + ' newGoalY: ' + this.state.playerGoal.y + ' direction: ' + this.state.playerRotation);
     }
 
-    playerMove(x, y) {
-        this.setState({
-            playerX: x,
-            playerY: y
-        });        
-    }
+    gameLoop() {
+        //console.log('PlayerPosX: ' + this.state.playerPos.x + ' PlayerPosY: ' + this.state.playerPos.y);
+        if (!this.goalReached()) {
+            console.log("goal not yet reached, moving into direciton of Goal!");
+            const direction = { x: this.state.playerGoal.x - this.state.playerPos.x, y: this.state.playerGoal.y - this.state.playerPos.y }
+            this.setState({ playerPos: { x: this.state.playerPos.x + direction.x*0.1, y: this.state.playerPos.y + direction.y*0.1 }})
 
-    playerAccelerate(speed) {
-        this.setState({
-            playerMomentum: this.state.playerMomentum + speed
-        });
-    }
-
-    playerDecelerate(speed) {
-        if (this.state.playerMomentum > 0) {
-            this.setState({
-                playerMomentum: this.state.playerMomentum + speed
-            });
-        } else if (this.state.playerMomentum < 0) {
-            this.setState({
-                playerMomentum: this.state.playerMomentum - speed
-            });
+        } else {
+            // stop
+            console.log("goal reached.")
         }
     }
 
-    playerSteer(direction) {
+    goalReached() {
+        return Math.abs(this.state.playerPos.x - this.state.playerGoal.x) < 5 &&
+                Math.abs(this.state.playerPos.y - this.state.playerGoal.y) < 5
+    }
+
+    playerMove(x_new, y_new) {
         this.setState({
-            playerRotation: this.state.playerRotation + direction
+            playerPos: {x: x_new, y: y_new}
         });
     }
-  
-    onKeyDown(e) {
-        switch (e.which) {
-            case 37: // Left
-                this.playerSteer(-10);
-                break;
-            case 38: // Up
-                this.playerAccelerate(0.3);
-                break;
-            case 39: // Right
-                this.playerSteer(10);
-                break;
-            case 40: // Down
-                this.playerAccelerate(-0.5);
-                break;
-            default:
-                break;
-        }
-    }  
 
     componentDidMount(){
-        document.addEventListener("keydown", this.onKeyDown, false);
-
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-        
+
         this.intervalId = setInterval(this.gameLoop.bind(this), 100);
     }
 
     componentWillUnmount(){
-        document.removeEventListener("keydown", this.onKeyDown, false);
         window.removeEventListener('resize', this.updateWindowDimensions);
         clearInterval(this.intervalId);
-    }    
+    }
 
     updateWindowDimensions() {
         this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
     }
 
-    render() {        
-        return <div onKeyDown={this.onKeyDown} tabIndex="0">
+    render() {
+        return <div onMouseDown={this._onMouseDown.bind(this)} tabIndex="0">
             <Background backgroundImage={backgroundImg}
-                windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} />     
-            <Car carImage={carImg} centreX={this.state.playerX} 
-                centreY={this.state.playerY} width={this.playerWidth}
-                height={this.playerHeight} rotation={this.state.playerRotation} />       
+                windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} />
+            <Car carImage={carImg} centreX={this.state.playerPos.x}
+                centreY={this.state.playerPos.y} width={this.playerWidth}
+                height={this.playerHeight} rotation={this.state.playerRotation} />
         </div>
     }
 }
