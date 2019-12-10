@@ -1,3 +1,10 @@
+## Install latest stable nodejs version
+~~~
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+~~~
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
