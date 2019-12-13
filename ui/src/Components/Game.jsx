@@ -7,7 +7,9 @@ import DriverRobot from './DriverRobot';
 import RobotArm from './RobotArm';
 
 class Game extends React.Component {
-    SPEED = 1;
+
+    ws = new WebSocket('ws://localhost:40510')
+
 
     constructor(props) {
         super(props);
@@ -87,10 +89,26 @@ class Game extends React.Component {
     }
 
     componentDidMount(){
+        this.ws.onopen = () => {
+            console.log('websocket connected.')
+        }
+        this.ws.onmessage = evt => {
+            console.log(evt.data)
+            const message = JSON.parse(evt.data)
+            console.log(message)
+            console.log(message.move)
+            this.setState({
+                driverGoal: {x: message.move.x, y: message.move.y}
+            });
+        }
+        this.ws.onclose = () => {
+            console.log('websocket disconnected.')
+            // automatically try to reconnect on connection loss
+        }
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
-        this.intervalId = setInterval(this.gameLoop.bind(this), 100);
+        this.intervalId = setInterval(this.gameLoop.bind(this), 10);
     }
 
     componentWillUnmount(){
