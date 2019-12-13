@@ -54,7 +54,7 @@ class Game extends React.Component {
             const direction = { x: this.state.driverGoal.x - this.state.driverPos.x, y: this.state.driverGoal.y - this.state.driverPos.y }
             this.setState({ driverPos: { x: this.state.driverPos.x + direction.x*0.1, y: this.state.driverPos.y + direction.y*0.1 }})
 
-        } 
+        }
         if (!this.rotationGoalReached()) {
             console.log("RobotArm has not yet reached its goal, moving arm into direction...");
             console.log(this.state);
@@ -96,10 +96,22 @@ class Game extends React.Component {
             console.log(evt.data)
             const message = JSON.parse(evt.data)
             console.log(message)
-            console.log(message.move)
-            this.setState({
-                driverGoal: {x: message.move.x, y: message.move.y}
-            });
+            switch(Object.keys(message)[0]){
+                case "robot1":
+                    this.setState({
+                        robotArm1RotationGoal: (message.robot1.rotate.degrees * Math.PI)/180
+                    });
+                    break;
+                case "robot2":
+                    console.log(message.move)
+                    this.setState({
+                        driverGoal: {x: message.robot2.move.x, y: message.robot2.move.y}
+                    });
+                    break;
+                case "robot3":
+                    break;
+            }
+
         }
         this.ws.onclose = () => {
             console.log('websocket disconnected.')

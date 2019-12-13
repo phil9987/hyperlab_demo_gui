@@ -37,10 +37,18 @@ app.get('/api/getList', (req,res) => {
   ws.send(JSON.stringify(myObj));
 });
 
-app.post('/robot1/move',function(request,response){
+app.post('/robot1/rotate',function(request,response){
   console.log(request.body)
-  console.log('Received request to move robot1 to ' + JSON.stringify(request.body));
-  const moveJsonObj = {move: {x: request.body.x, y: request.body.y}};
+  console.log('Received request to rotate robot1 to ' + JSON.stringify(request.body));
+  const moveJsonObj = {robot1: {rotate: {degrees: request.body.degrees}}};
+  ws.send(JSON.stringify(moveJsonObj));
+  response.json(request.body);
+});
+
+app.post('/robot2/move',function(request,response){
+  console.log(request.body)
+  console.log('Received request to move robot2 to ' + JSON.stringify(request.body));
+  const moveJsonObj = {robot2: {move: {x: request.body.x, y: request.body.y}}};
   ws.send(JSON.stringify(moveJsonObj));
   response.json(request.body);
 });
