@@ -28,15 +28,6 @@ wss.on('connection', function (ws_) {
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'ui/build')));
 
-// An api endpoint that returns a short list of items
-app.get('/api/getList', (req,res) => {
-  var list = ["item1", "item2", "item3"];
-  res.json(list);
-  console.log('Sent list of items');
-  const myObj = {move: {x: 500, y: 600}};
-  ws.send(JSON.stringify(myObj));
-});
-
 app.post('/robot1/rotate',function(request,response){
   console.log(request.body)
   console.log('Received request to rotate robot1 to ' + JSON.stringify(request.body));
