@@ -4,7 +4,7 @@ The server runs on port 5000.
 The following API calls are currently implemented:
 
 | request_type | uri | JSON_payload |
-|--------------|:---:|-------------:|
+|:-------------|:---|:-------------|
 | POST | localhost:5000/robot1/move | {x:<x_coordinate>, y: <y_coordinate>} |
 
 
