@@ -2,9 +2,7 @@ var express = require('express');
 const path = require('path');
 var bodyParser = require("body-parser");
 var app = express();
-
-var app = express();
-//Here we are configuring express to use body-parser as middle-ware.
+//Here we are configuring express to use body-parser as middle-ware. This enables it to receive POST requests with JSON payload
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -18,11 +16,6 @@ wss.on('connection', function (ws_) {
   ws_.on('message', function (message) {
     console.log('received: %s', message)
   });
-
-  /*setInterval(
-    () => ws_.send(`{"move": "${new Date()}"}`),
-    1000
-  )*/
 })
 
 // Serve the static files from the React app

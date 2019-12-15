@@ -6,7 +6,7 @@ import Background from './Background';
 import DriverRobot from './DriverRobot';
 import RobotArm from './RobotArm';
 
-class Game extends React.Component {
+class Simulation extends React.Component {
 
     ws = new WebSocket('ws://localhost:40510')
 
@@ -48,7 +48,6 @@ class Game extends React.Component {
     }
 
     gameLoop() {
-        //console.log('driverPosX: ' + this.state.driverPos.x + ' driverPosY: ' + this.state.driverPos.y);
         if (!this.driverGoalReached()) {
             console.log("driverRobot has not yet reached its goal, moving into direciton of goal...");
             const direction = { x: this.state.driverGoal.x - this.state.driverPos.x, y: this.state.driverGoal.y - this.state.driverPos.y }
@@ -69,6 +68,7 @@ class Game extends React.Component {
                 this.setState({ robotArm1Rotation: nextRotation});
             }
         } else {
+            // TODO: notify UI artifact about new position?
             console.log("robot arm is already at desired rotation : " + this.state.robotArm1Rotation + ' (' + this.state.robotArm1RotationGoal + ')');
         }
     }
@@ -146,4 +146,4 @@ class Game extends React.Component {
     }
 }
 
-export default Game;
+export default Simulation;
