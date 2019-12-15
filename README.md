@@ -7,6 +7,8 @@ The following API calls are currently implemented:
 |:-------------|:---|:-------------|
 | POST | localhost:5000/robot1/rotate | {degrees:<degree(position on circle)>} |
 | POST | localhost:5000/robot2/move | {x:<x_coordinate>, y: <y_coordinate>} |
+| POST | localhost:5000/terminal/addText | {text:<some text>} |
+
 
 A collection of sample requests:
 https://www.getpostman.com/collections/29f2115d669385ee2193

@@ -2,10 +2,10 @@ import React from 'react';
 
 function Background(props) {
     const bgStyle = {
-        width: `calc(${props.windowWidth}px)`,
-        height: `calc(${props.windowHeight}px)`,
-        top: 0,
-        left: 0,
+        width: props.windowWidth,
+        height: props.windowHeight,
+        top: props.top,
+        left: props.left,
         position: 'absolute'
     };
 

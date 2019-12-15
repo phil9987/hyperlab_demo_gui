@@ -24,16 +24,24 @@ app.use(express.static(path.join(__dirname, 'ui/build')));
 app.post('/robot1/rotate',function(request,response){
   console.log(request.body)
   console.log('Received request to rotate robot1 to ' + JSON.stringify(request.body));
-  const moveJsonObj = {robot1: {rotate: {degrees: request.body.degrees}}};
-  ws.send(JSON.stringify(moveJsonObj));
+  const jsonObj = {robot1: {rotate: {degrees: request.body.degrees}}};
+  ws.send(JSON.stringify(jsonObj));
   response.json(request.body);
 });
 
 app.post('/robot2/move',function(request,response){
   console.log(request.body)
   console.log('Received request to move robot2 to ' + JSON.stringify(request.body));
-  const moveJsonObj = {robot2: {move: {x: request.body.x, y: request.body.y}}};
-  ws.send(JSON.stringify(moveJsonObj));
+  const jsonObj = {robot2: {move: {x: request.body.x, y: request.body.y}}};
+  ws.send(JSON.stringify(jsonObj));
+  response.json(request.body);
+});
+
+app.post('/terminal/addText',function(request,response){
+  console.log(request.body)
+  console.log('Received request from ' + request.body.origin + ' to add text to terminal: ' + request.body.text);
+  const jsonObj = {terminal: {origin: request.body.origin, text: request.body.text}};
+  ws.send(JSON.stringify(jsonObj));
   response.json(request.body);
 });
 

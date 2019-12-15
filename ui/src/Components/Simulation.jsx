@@ -5,6 +5,7 @@ import robotArmImg from '../Assets/RobotArm.png'
 import Background from './Background';
 import DriverRobot from './DriverRobot';
 import RobotArm from './RobotArm';
+import Terminal from './Terminal';
 
 class Simulation extends React.Component {
 
@@ -22,8 +23,9 @@ class Simulation extends React.Component {
             robotArm1Pos: {x: 500, y: 500},
             robotArm1Rotation: 0,
             robotArm1RotationGoal: 0,
-            windowWidth: 0,
-            windowHeight: 0,
+            windowWidth: 800,
+            windowHeight: 600,
+            terminalText: "test"
         };
 
         this.driverWidth = 50;
@@ -32,11 +34,6 @@ class Simulation extends React.Component {
 
         this.robotArmWidth = 240;
         this.robotArmHeight = 34;
-
-
-
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-
     }
     _onMouseDown(e) {
         // TODO: replace this by a REST-API. onMouseDown is only for demo purpose
@@ -88,14 +85,20 @@ class Simulation extends React.Component {
         });
     }
 
+    addTerminalLine(origin, message) {
+        const nextLine = origin + ': ' + message + '\n';
+        this.setState({terminalText: this.state.terminalText + nextLine});
+
+    }
+
     componentDidMount(){
         this.ws.onopen = () => {
-            console.log('websocket connected.')
-        }
+            console.log('websocket connected.');
+        };
         this.ws.onmessage = evt => {
-            console.log(evt.data)
-            const message = JSON.parse(evt.data)
-            console.log(message)
+            console.log(evt.data);
+            const message = JSON.parse(evt.data);
+            console.log(message);
             switch(Object.keys(message)[0]){
                 case "robot1":
                     this.setState({
@@ -103,45 +106,42 @@ class Simulation extends React.Component {
                     });
                     break;
                 case "robot2":
-                    console.log(message.move)
+                    console.log(message.move);
                     this.setState({
                         driverGoal: {x: message.robot2.move.x, y: message.robot2.move.y}
                     });
                     break;
                 case "robot3":
                     break;
-            }
-
+                case "terminal":
+                    console.log("received log message");
+                    this.addTerminalLine(message.terminal.origin, message.terminal.text);
+                    break;
+            };
         }
         this.ws.onclose = () => {
             console.log('websocket disconnected.')
             // automatically try to reconnect on connection loss
-        }
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
+        };
 
         this.intervalId = setInterval(this.gameLoop.bind(this), 10);
     }
 
     componentWillUnmount(){
-        window.removeEventListener('resize', this.updateWindowDimensions);
         clearInterval(this.intervalId);
-    }
-
-    updateWindowDimensions() {
-        this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
     }
 
     render() {
         return <div onMouseDown={this._onMouseDown.bind(this)} tabIndex="0">
             <Background backgroundImage={backgroundImg}
-                windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} />
+                windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
             <DriverRobot driverRobotImage={driverRobotImg} centreX={this.state.driverPos.x}
                 centreY={this.state.driverPos.y} width={this.driverWidth}
                 height={this.driverHeight} rotation={this.state.driverRotation} />
             <RobotArm robotArmImage={robotArmImg} centreX={this.state.robotArm1Pos.x}
                 centreY={this.state.robotArm1Pos.y} width={this.robotArmWidth}
                 height={this.robotArmHeight} rotation={this.state.robotArm1Rotation} />
+            <Terminal top={0} left={this.state.windowWidth} width={400} height={this.state.windowHeight} text={this.state.terminalText} />
         </div>
     }
 }
