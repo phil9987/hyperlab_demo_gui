@@ -67,9 +67,6 @@ class Simulation extends React.Component {
                 }
                 this.setState({ robotArm1Rotation: nextRotation});
             }
-        } else {
-            // TODO: notify UI artifact about new position?
-            console.log("robot arm is already at desired rotation : " + this.state.robotArm1Rotation + ' (' + this.state.robotArm1RotationGoal + ')');
         }
     }
 
