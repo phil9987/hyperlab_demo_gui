@@ -116,6 +116,9 @@ class Simulation extends React.Component {
                     });
                     break;
                 case "robot3":
+                    this.setState({
+                        robotArm1RotationGoal: (message.robot1.rotate.degrees * Math.PI)/180
+                    });
                     break;
                 case "terminal":
                     console.log("received log message");
