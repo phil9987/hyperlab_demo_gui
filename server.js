@@ -37,6 +37,14 @@ app.post('/robot2/move',function(request,response){
   response.json(request.body);
 });
 
+app.post('/robot3/rotate',function(request,response){
+  console.log(request.body)
+  console.log('Received request to rotate robot3 to ' + JSON.stringify(request.body));
+  const jsonObj = {robot3: {rotate: {degrees: request.body.degrees}}};
+  ws.send(JSON.stringify(jsonObj));
+  response.json(request.body);
+});
+
 app.post('/terminal/addText',function(request,response){
   console.log(request.body)
   console.log('Received request from ' + request.body.origin + ' to add text to terminal: ' + request.body.text);
