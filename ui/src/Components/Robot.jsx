@@ -1,10 +1,10 @@
 import React from 'react';
 
-function RobotArm(props) {
+function Robot(props) {
     const left = Math.round(props.centreX - (props.width / 2));
     const top = Math.round(props.centreY - (props.height / 2));
 
-    const robotArmStyle = {
+    const robotStyle = {
         width: `calc(${props.width}px)`,
         height: `calc(${props.height}px)`,
         top: `calc(${top}px)`,
@@ -15,8 +15,8 @@ function RobotArm(props) {
     };
 
     return (
-        <img src={props.robotArmImage} style={robotArmStyle} alt=""/>
+        <img src={props.robotImage} style={robotStyle} alt=""/>
     );
 }
 
-export default RobotArm;
+export default Robot;

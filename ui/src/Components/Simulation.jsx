@@ -3,8 +3,7 @@ import backgroundImg from '../Assets/Background.png';
 import driverRobotImg from '../Assets/DriverRobot.png';
 import robotArmImg from '../Assets/RobotArm.png'
 import Background from './Background';
-import DriverRobot from './DriverRobot';
-import RobotArm from './RobotArm';
+import Robot from './Robot';
 import Terminal from './Terminal';
 
 class Simulation extends React.Component {
@@ -135,12 +134,15 @@ class Simulation extends React.Component {
         return <div onMouseDown={this._onMouseDown.bind(this)} tabIndex="0">
             <Background backgroundImage={backgroundImg}
                 windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
-            <DriverRobot driverRobotImage={driverRobotImg} centreX={this.state.driverPos.x}
+            <Robot robotImage={driverRobotImg} centreX={this.state.driverPos.x}
                 centreY={this.state.driverPos.y} width={this.driverWidth}
                 height={this.driverHeight} rotation={this.state.driverRotation} />
-            <RobotArm robotArmImage={robotArmImg} centreX={this.state.robotArm1Pos.x}
+            <Robot robotImage={robotArmImg} centreX={this.state.robotArm1Pos.x}
                 centreY={this.state.robotArm1Pos.y} width={this.robotArmWidth}
                 height={this.robotArmHeight} rotation={this.state.robotArm1Rotation} />
+            <Robot robotImage={robotArmImg} centreX={this.state.robotArm2Pos.x}
+                centreY={this.state.robotArm2Pos.y} width={this.robotArmWidth}
+                height={this.robotArmHeight} rotation={this.state.robotArm2Rotation} />
             <Terminal top={0} left={this.state.windowWidth} width={400} height={this.state.windowHeight} text={this.state.terminalText} />
         </div>
     }
