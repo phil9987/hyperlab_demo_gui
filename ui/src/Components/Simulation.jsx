@@ -16,24 +16,28 @@ class Simulation extends React.Component {
         super(props);
 
         this.state = {
-            driverPos: {x: 120, y: 120},
-            driverGoal: {x: 120, y: 120},
+            driverPos: {x: 300, y: 200},
+            driverGoal: {x: 300, y: 200},
             driverRotation: 0,
 
-            robotArm1Pos: {x: 500, y: 500},
+            robotArm1Pos: {x: 250, y: 400},
             robotArm1Rotation: 0,
             robotArm1RotationGoal: 0,
+
+            robotArm2Pos: {x: 550, y: 400},
+            robotArm2Rotation: 0,
+            robotArm2RotationGoal: 0,
             windowWidth: 800,
             windowHeight: 600,
-            terminalText: "test"
+            terminalText: ""
         };
 
-        this.driverWidth = 50;
-        this.driverHeight = 50;
+        this.driverWidth = 25;
+        this.driverHeight = 25;
         this.driverSpeed = 10;
 
-        this.robotArmWidth = 240;
-        this.robotArmHeight = 34;
+        this.robotArmWidth = 120;
+        this.robotArmHeight = 17;
     }
     _onMouseDown(e) {
         // TODO: replace this by a REST-API. onMouseDown is only for demo purpose
@@ -141,6 +145,9 @@ class Simulation extends React.Component {
             <RobotArm robotArmImage={robotArmImg} centreX={this.state.robotArm1Pos.x}
                 centreY={this.state.robotArm1Pos.y} width={this.robotArmWidth}
                 height={this.robotArmHeight} rotation={this.state.robotArm1Rotation} />
+            <RobotArm robotArmImage={robotArmImg} centreX={this.state.robotArm2Pos.x}
+                centreY={this.state.robotArm2Pos.y} width={this.robotArmWidth}
+                height={this.robotArmHeight} rotation={this.state.robotArm2Rotation} />
             <Terminal top={0} left={this.state.windowWidth} width={400} height={this.state.windowHeight} text={this.state.terminalText} />
         </div>
     }
