@@ -8,15 +8,22 @@ app.use(bodyParser.json());
 
 const PORT = 5000;
 
-var WebSocketServer = require('ws').Server, wss = new WebSocketServer({port: 40510});
-var ws;
+const WebSocket = require('ws');
+wss = new WebSocket.Server({port: 40510});
 
-wss.on('connection', function (ws_) {
-  ws = ws_;
-  ws_.on('message', function (message) {
+wss.on('connection', function (ws) {
+  ws.on('message', function (message) {
     console.log('received: %s', message)
   });
 })
+
+function broadcastToAllWsClients(jsonMsg) {
+  wss.clients.forEach((ws) => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(jsonMsg));
+    }
+  });
+}
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'ui/build')));
@@ -25,7 +32,8 @@ app.post('/robot1/rotate',function(request,response){
   console.log(request.body)
   console.log('Received request to rotate robot1 to ' + JSON.stringify(request.body));
   const jsonObj = {robot1: {rotate: {degrees: request.body.degrees}}};
-  ws.send(JSON.stringify(jsonObj));
+  broadcastToAllWsClients(jsonObj);
+  //ws.send(JSON.stringify(jsonObj));
   response.json(request.body);
 });
 
@@ -33,7 +41,8 @@ app.post('/robot2/move',function(request,response){
   console.log(request.body)
   console.log('Received request to move robot2 to ' + JSON.stringify(request.body));
   const jsonObj = {robot2: {move: {x: request.body.x, y: request.body.y}}};
-  ws.send(JSON.stringify(jsonObj));
+  broadcastToAllWsClients(jsonObj);
+  //ws.send(JSON.stringify(jsonObj));
   response.json(request.body);
 });
 
@@ -41,7 +50,8 @@ app.post('/terminal/addText',function(request,response){
   console.log(request.body)
   console.log('Received request from ' + request.body.origin + ' to add text to terminal: ' + request.body.text);
   const jsonObj = {terminal: {origin: request.body.origin, text: request.body.text}};
-  ws.send(JSON.stringify(jsonObj));
+  broadcastToAllWsClients(jsonObj);
+  //ws.send(JSON.stringify(jsonObj));
   response.json(request.body);
 });
 
@@ -50,6 +60,6 @@ app.get('*', (req,res) =>{
   res.sendFile(path.join(__dirname+'/ui/build/index.html'));
 });
 
-app.listen(5000, function () {
+app.listen(PORT, function () {
   console.log('App is listening on port 5000!');
 });
