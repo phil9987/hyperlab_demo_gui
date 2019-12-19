@@ -40,6 +40,8 @@ class Simulation extends React.Component {
         this.driverHeight = 25;
         this.driverSpeed = 10;
 
+        this.ballDestination = {x:615, y: 400}
+
         this.robotArmWidth = 120;
         this.robotArmHeight = 17;
     }
@@ -49,7 +51,15 @@ class Simulation extends React.Component {
                         driverRotation: Math.atan2(e.nativeEvent.offsetY - this.state.driverPos.y, e.nativeEvent.offsetX - this.state.driverPos.x) + Math.PI / 2,
                         robotArm1RotationGoal: (Math.atan2(e.nativeEvent.offsetY - this.state.robotArm1Pos.y, e.nativeEvent.offsetX - this.state.robotArm1Pos.x) + 2*Math.PI) % (2*Math.PI),
                     });*/
-        console.log(this.state);
+        if (this.ballAtDestination()) {
+            this.setState({ballPos: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}});
+            const jsonObj = {jacamo: {placeObject: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}}};
+            this.ws.send(JSON.stringify(jsonObj));
+        }
+    }
+
+    ballAtDestination() {
+        return this.state.ballPos.x === this.ballDestination.x && this.state.ballPos.y === this.ballDestination.y;
     }
 
     gameLoop() {

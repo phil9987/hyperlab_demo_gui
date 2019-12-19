@@ -11,15 +11,25 @@ const PORT = 5000;
 const WebSocket = require('ws');
 wss = new WebSocket.Server({port: 40510});
 
-wss.on('connection', function (ws) {
-  ws.on('message', function (message) {
+wss.on('connection', function (ws_) {
+  ws_.on('message', function(message) {
     console.log('received: %s', message)
+    const jsonMsg = JSON.parse(message);
+    forwardToOtherWsClients(jsonMsg, ws_);
   });
-})
+});
 
 function broadcastToAllWsClients(jsonMsg) {
   wss.clients.forEach((ws) => {
     if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(jsonMsg));
+    }
+  });
+}
+
+function forwardToOtherWsClients(jsonMsg, originWs) {
+  wss.clients.forEach(function each(ws) {
+    if (ws!== originWs && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(jsonMsg));
     }
   });
