@@ -46,15 +46,11 @@ class Simulation extends React.Component {
         this.robotArmHeight = 17;
     }
     _onMouseDown(e) {
-        // TODO: replace this by a REST-API. onMouseDown is only for demo purpose
-        /*this.setState({ driverGoal: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY },
-                        driverRotation: Math.atan2(e.nativeEvent.offsetY - this.state.driverPos.y, e.nativeEvent.offsetX - this.state.driverPos.x) + Math.PI / 2,
-                        robotArm1RotationGoal: (Math.atan2(e.nativeEvent.offsetY - this.state.robotArm1Pos.y, e.nativeEvent.offsetX - this.state.robotArm1Pos.x) + 2*Math.PI) % (2*Math.PI),
-                    });*/
+        // if ball is at its destination, user can place it somewhere by clicking on the map to initiate a new scenario
         if (this.ballAtDestination()) {
             this.setState({ballPos: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}});
             const jsonObj = {jacamo: {placeObject: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}}};
-            this.ws.send(JSON.stringify(jsonObj));
+            this.ws.send(JSON.stringify(jsonObj)); // notifies jacamo app
         }
     }
 
@@ -133,20 +129,45 @@ class Simulation extends React.Component {
             console.log(message);
             switch(Object.keys(message)[0]){
                 case "robot1":
-                    this.setState({
-                        robotArm1RotationGoal: (message.robot1.rotate.degrees * Math.PI)/180
-                    });
+                    switch(Object.keys(message.robot1)[0]) {
+                        case "rotate":
+                            this.setState({robotArm1RotationGoal: (message.robot1.rotate.degrees * Math.PI)/180});
+                            break;
+                        case "grasp":
+                            break
+                        case "release":
+                            break
+                        default:
+                            console.log("unable to process json message: " + message);
+                    }
                     break;
                 case "robot2":
-                    console.log(message.move);
-                    this.setState({
-                        driverGoal: {x: message.robot2.move.x, y: message.robot2.move.y}
-                    });
+                    switch(Object.keys(message.robot2)[0]) {
+                        case "move":
+                            this.setState({driverGoal: {x: message.robot2.move.x, y: message.robot2.move.y}});
+                            break;
+                        case "load":
+                            break
+                        case "attach":
+                            break
+                        case "release":
+                            break
+                        default:
+                            console.log("unable to process json message: " + message);
+                    }
                     break;
                 case "robot3":
-                    this.setState({
-                        robotArm2RotationGoal: (message.robot3.rotate.degrees * Math.PI)/180
-                    });
+                    switch(Object.keys(message.robot3)[0]) {
+                        case "rotate":
+                            this.setState({robotArm1RotationGoal: (message.robot3.rotate.degrees * Math.PI)/180});
+                            break;
+                        case "grasp":
+                            break
+                        case "release":
+                            break
+                        default:
+                            console.log("unable to process json message: " + message);
+                    }
                     break;
                 case "terminal":
                     console.log("received log message");

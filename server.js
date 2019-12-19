@@ -2,10 +2,6 @@ var express = require('express');
 const path = require('path');
 var bodyParser = require("body-parser");
 var app = express();
-//Here we are configuring express to use body-parser as middle-ware. This enables it to receive POST requests with JSON payload
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 const PORT = 5000;
 
 const WebSocket = require('ws');
@@ -14,6 +10,7 @@ wss = new WebSocket.Server({port: 40510});
 wss.on('connection', function (ws_) {
   ws_.on('message', function(message) {
     console.log('received: %s', message)
+    // the message is being forwarded to the other client, i.e. frontend or gui-artifact of jacamo-app
     const jsonMsg = JSON.parse(message);
     forwardToOtherWsClients(jsonMsg, ws_);
   });
@@ -37,41 +34,6 @@ function forwardToOtherWsClients(jsonMsg, originWs) {
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'ui/build')));
-
-app.post('/robot1/rotate',function(request,response){
-  console.log(request.body)
-  console.log('Received request to rotate robot1 to ' + JSON.stringify(request.body));
-  const jsonObj = {robot1: {rotate: {degrees: request.body.degrees}}};
-  broadcastToAllWsClients(jsonObj);
-  //ws.send(JSON.stringify(jsonObj));
-  response.json(request.body);
-});
-
-app.post('/robot2/move',function(request,response){
-  console.log(request.body)
-  console.log('Received request to move robot2 to ' + JSON.stringify(request.body));
-  const jsonObj = {robot2: {move: {x: request.body.x, y: request.body.y}}};
-  broadcastToAllWsClients(jsonObj);
-  //ws.send(JSON.stringify(jsonObj));
-  response.json(request.body);
-});
-
-app.post('/robot3/rotate',function(request,response){
-  console.log(request.body)
-  console.log('Received request to rotate robot3 to ' + JSON.stringify(request.body));
-  const jsonObj = {robot3: {rotate: {degrees: request.body.degrees}}};
-  ws.send(JSON.stringify(jsonObj));
-  response.json(request.body);
-});
-
-app.post('/terminal/addText',function(request,response){
-  console.log(request.body)
-  console.log('Received request from ' + request.body.origin + ' to add text to terminal: ' + request.body.text);
-  const jsonObj = {terminal: {origin: request.body.origin, text: request.body.text}};
-  broadcastToAllWsClients(jsonObj);
-  //ws.send(JSON.stringify(jsonObj));
-  response.json(request.body);
-});
 
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
