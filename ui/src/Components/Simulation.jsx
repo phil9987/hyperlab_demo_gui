@@ -224,14 +224,14 @@ class Simulation extends React.Component {
                         this.setState({robotArm2RotationGoal: (message.robot3.rotate.degrees * Math.PI)/180});
                         break;
                     case "grasp":
-                        if(message.robot2.grasp) {
-                            console.log("robot2 grasps ball");
+                        if(message.robot3.grasp) {
+                            console.log("robot3 grasps ball");
                             this.setState({
                                 robotArm2BallAttached: true,
                                 ballPos: this.getBallPositionAtRobotArm(this.state.robotArm2Rotation, this.state.robotArm2Pos)
                             });
                         } else {
-                            console.log("robot2 releases ball");
+                            console.log("robot3 releases ball");
                             this.setState({robotArm2BallAttached: false});
                             if (this.state.robotArm2Rotation === 0) {
                                 // we reached the destination
