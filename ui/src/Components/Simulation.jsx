@@ -237,7 +237,7 @@ class Simulation extends React.Component {
                                 // we reached the destination
                                 console.log("Ball has reached destination!");
                                 this.setState({
-                                    ballPos = this.ballDestination
+                                    ballPos: this.ballDestination
                                 });
                             }
                         }
