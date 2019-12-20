@@ -221,7 +221,7 @@ class Simulation extends React.Component {
             case "robot3":
                 switch(Object.keys(message.robot3)[0]) {
                     case "rotate":
-                        this.setState({robotArm1RotationGoal: (message.robot3.rotate.degrees * Math.PI)/180});
+                        this.setState({robotArm2RotationGoal: (message.robot3.rotate.degrees * Math.PI)/180});
                         break;
                     case "grasp":
                         if(message.robot2.grasp) {
