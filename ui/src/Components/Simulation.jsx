@@ -233,7 +233,7 @@ class Simulation extends React.Component {
                         } else {
                             console.log("robot3 releases ball");
                             this.setState({robotArm2BallAttached: false});
-                            if (this.state.robotArm2Rotation === 0) {
+                            if (Math.abs(this.state.robotArm2Rotation) <= 0.05) {
                                 // we reached the destination
                                 console.log("Ball has reached destination!");
                                 this.setState({
@@ -241,8 +241,9 @@ class Simulation extends React.Component {
                                 });
                             }
                         }
+                        break;
                     default:
-                        console.log("unable to process json message: " + message);
+                        console.log("unable to process json message: " + JSON.stringify(message));
                 }
                 break;
             case "terminal":
