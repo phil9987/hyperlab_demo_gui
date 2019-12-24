@@ -315,8 +315,8 @@ class Simulation extends React.Component {
     }
 
     render() {
-        return <div onMouseDown={this._onMouseDown.bind(this)} tabIndex="0">
-            <Background backgroundImage={backgroundImg}
+        return <div tabIndex="0">
+            <Background backgroundImage={backgroundImg} onMouseDown={this._onMouseDown.bind(this)}
                 windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
             <Ball centreX={this.state.ballPos.x} centreY={this.state.ballPos.y} radius={this.ballRadius}/>
             <Robot robotImage={driverRobotImg} centreX={this.state.driverPos.x}
