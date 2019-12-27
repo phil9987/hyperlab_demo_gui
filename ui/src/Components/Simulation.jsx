@@ -6,6 +6,7 @@ import Background from './Background';
 import Robot from './Robot';
 import Terminal from './Terminal';
 import Ball from './Ball';
+import Configuration from './Configuration';
 
 class Simulation extends React.Component {
     // The websocket used to communicate with the GUI backend and the Jacamo application
@@ -319,8 +320,13 @@ class Simulation extends React.Component {
 
     render() {
         return <div tabIndex="0">
-            <Background backgroundImage={backgroundImg} onMouseDown={this._onMouseDown.bind(this)}
-                windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
+            <div class="background">
+                <Background backgroundImage={backgroundImg} onMouseDown={this._onMouseDown.bind(this)}
+                    windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
+            </div>
+                <div class="configsection">
+                <Configuration/>
+                </div>
             <Ball centreX={this.state.ballPos.x} centreY={this.state.ballPos.y} radius={this.ballRadius}/>
             <Robot robotImage={driverRobotImg} centreX={this.state.driverPos.x}
                 centreY={this.state.driverPos.y} width={this.driverWidth}

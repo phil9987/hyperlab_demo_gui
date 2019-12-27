@@ -39,3 +39,14 @@ div.terminal {
     transform: rotate(360deg);
   }
 }
+.background {
+  position:absolute;
+}
+.configsection {
+  top:600px;
+  left:0px;
+  position: relative;
+}
+.marginRight {
+  margin-right: 50px;
+}
