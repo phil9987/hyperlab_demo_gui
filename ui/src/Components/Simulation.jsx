@@ -163,7 +163,7 @@ class Simulation extends React.Component {
      * Handles the JSON messages received through the websocket and updates the state of the UI components accordingly
      */
     handleMessage(message) {
-        switch(Object.keys(message)[0]){
+        switch(Object.keys(message)[0]) {
             case "robot1":
                 switch(Object.keys(message.robot1)[0]) {
                     case "rotate":
@@ -250,6 +250,8 @@ class Simulation extends React.Component {
                 console.log("received log message");
                 this.addTerminalLine(message.terminal.origin, message.terminal.text);
                 break;
+            default:
+                console.log("invalid json message: " + JSON.stringify(message));
         };
     }
 
