@@ -248,7 +248,7 @@ class Simulation extends React.Component {
                 break;
             case "terminal":
                 console.log("received log message");
-                this.addTerminalLine(message.terminal.origin, message.terminal.text);
+                this.addTerminalLine(message.terminal.origin, message.terminal.message);
                 break;
             default:
                 console.log("invalid json message: " + JSON.stringify(message));
