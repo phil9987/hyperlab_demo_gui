@@ -325,7 +325,7 @@ class Simulation extends React.Component {
                     windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
             </div>
                 <div class="configsection">
-                <Configuration/>
+                <Configuration websocket={this.ws}/>
                 </div>
             <Ball centreX={this.state.ballPos.x} centreY={this.state.ballPos.y} radius={this.ballRadius}/>
             <Robot robotImage={driverRobotImg} centreX={this.state.driverPos.x}
