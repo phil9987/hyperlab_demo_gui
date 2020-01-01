@@ -13,7 +13,7 @@ class Configuration extends React.Component {
         manual3: false,
       };
 
-      this.yggdrasilUrl = 'http://localhost:8080/';
+      this.yggdrasilUrl = 'http://localhost:8080';
       this.ws = props.websocket;
       this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -30,6 +30,7 @@ class Configuration extends React.Component {
       const jsonObj = {jacamo: {changeArtifact: {name: name_, enabled: value}}};
       console.log("setting " + name_ + " enabled: " + value);
       this.ws.send(JSON.stringify(jsonObj)); // notifies jacamo app
+      console.log('preparing request to yggdrasil...');
       var xhr = new XMLHttpRequest()
       // get a callback when the server responds
       xhr.addEventListener('load', () => {
@@ -44,7 +45,9 @@ class Configuration extends React.Component {
                 // TODO: also activate corresponding manuals?
 
                 // open the request with the verb and the url
+                console.log('dispatching request to ' + this.constructUrl('/artifacts'));
                 xhr.open('POST', this.constructUrl('/artifacts/robot1'));
+                //xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
                 xhr.setRequestHeader('content-type', 'text/turtle');
                 xhr.setRequestHeader('slug', 'robot1');
                 const payload = `@prefix eve: <http://w3id.org/eve#> .
@@ -59,6 +62,8 @@ class Configuration extends React.Component {
                 // deactivate
                 // TODO: also deactivate manuals
                 xhr.open('DELETE', this.constructUrl('/artifacts/robot1'));
+                //xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+                xhr.setRequestHeader('slug', 'robot1');
                 xhr.send();
             }
 

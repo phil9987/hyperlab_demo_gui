@@ -1,10 +1,13 @@
 var express = require('express');
-const path = require('path');
+var path = require('path');
 var bodyParser = require("body-parser");
 var app = express();
+var cors = require('cors');
 const PORT = 5000;
+var WebSocket = require('ws');
+// TODO: add whitelist https://daveceddia.com/access-control-allow-origin-cors-errors-in-react-express/
+app.use(cors());
 
-const WebSocket = require('ws');
 wss = new WebSocket.Server({port: 40510});
 
 wss.on('connection', function (ws_) {
