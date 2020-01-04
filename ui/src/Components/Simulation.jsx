@@ -320,11 +320,11 @@ class Simulation extends React.Component {
 
     render() {
         return <div tabIndex="0">
-            <div class="background">
+            <div className="background">
                 <Background backgroundImage={backgroundImg} onMouseDown={this._onMouseDown.bind(this)}
                     windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight} top={0} left={0} />
             </div>
-                <div class="configsection">
+                <div className="configsection">
                 <Configuration websocket={this.ws}/>
                 </div>
             <Ball centreX={this.state.ballPos.x} centreY={this.state.ballPos.y} radius={this.ballRadius}/>
