@@ -17,18 +17,53 @@ class Configuration extends React.Component {
       this.handleInputChange = this.handleInputChange.bind(this);
     }
 
-    createRobot(requestObj, robotNumber, withManual) {
+    updateRobot2(requestObj, withManual) {
+      const url = this.constructUrl('/artifacts/robot2');
+      var payload = `@prefix eve: <http://w3id.org/eve#> .
+
+      <http://localhost:8080/artifacts/robot2>
+        a eve:Artifact ;
+        eve:hasName "Robot2" ;
+        eve:isRobot "Robot2" ;
+        eve:hasCartagoArtifact "www.Robot2" .
+      `;
+      if (withManual) {
+        payload = `@prefix eve: <http://w3id.org/eve#> .
+        <http://localhost:8080/artifacts/robot2>
+          a eve:Artifact ;
+          eve:hasName "Robot2" ;
+          eve:isRobot "Robot2" ;
+          eve:hasCartagoArtifact "www.Robot2" ;
+          eve:hasManual [ eve:hasName "driverManual" ;
+          eve:hasUsageProtocol [
+            eve:hasName "loadAndDrive" ;
+            eve:hasFunction "drive(X1,Y1,X2,Y2)" ;
+            eve:hasPrecondition "true" ;
+            eve:hasBody " move(X1,Y1);
+                    load;
+                    move(X2,Y2);
+                    unload "
+          ]
+          ].`;
+      }
+      requestObj.open('PUT', url);
+      requestObj.setRequestHeader('content-type', 'text/turtle');
+      requestObj.setRequestHeader('slug', 'robot2');
+      requestObj.send(payload);
+    }
+
+    createRobot(requestObj, robotNumber) {
       const url = this.constructUrl('/artifacts');
       console.log('dispatching request to ' + url);
       var payload;
-      if (robotNumber === 1 || (robotNumber === 2 && !withManual)) {
+      if (robotNumber === 1) {
         payload = `@prefix eve: <http://w3id.org/eve#> .
         <>
             a eve:Artifact ;
-            eve:hasName "robot` + robotNumber + `" ;
-            eve:isRobot "robot` + robotNumber + `" ;
-            eve:hasCartagoArtifact "www.Robot` + robotNumber + `" .`;
-      } else if (robotNumber === 2 && withManual) {
+            eve:hasName "robot1" ;
+            eve:isRobot "robot1" ;
+            eve:hasCartagoArtifact "www.Robot1" .`;
+      } else if (robotNumber === 2) {
         payload = `@prefix eve: <http://w3id.org/eve#> .
         <http://localhost:8080/artifacts/robot2>
           a eve:Artifact ;
@@ -198,6 +233,40 @@ class Configuration extends React.Component {
               this.setState({
                 manual3: false
               })
+            }
+            break;
+          case 'manual2':
+            if (value) {
+              // activate manual2
+              this.updateRobot2(xhr, true);
+            } else {
+              // deactivate manual2
+              this.updateRobot2(xhr, false);
+            }
+            break;
+          case 'manual3':
+            if (value) {
+              // activate manual3
+              const payload = `@prefix eve: <http://w3id.org/eve#> .
+
+              <http://localhost:8080/manuals/phantomXmanual> a eve:Manual ;
+                  eve:hasName "phantomXmanual" ;
+                  eve:explains <http://localhost:8080/artifacts/robot3> ;
+                  eve:hasUsageProtocol [
+                    eve:hasName "deliver" ;
+                    eve:hasFunction "pickAndPlace(D1,D2)" ;
+                    eve:hasPrecondition "true" ;
+                    eve:hasBody " -+rotating(\\"Robot3\\",D1); -+grasping(\\"Robot3\\"); -+rotating(\\"Robot3\\",D2); -+releasing(\\"Robot3\\") "
+                  ] .`;
+              xhr.open('POST', this.constructUrl('/manuals'));
+              xhr.setRequestHeader('content-type', 'text/turtle');
+              xhr.setRequestHeader('slug', 'phantomXmanual');
+              xhr.send(payload)
+
+            } else {
+              // deactivate manual3
+              xhr.open('DELETE', this.constructUrl('/manuals/phantomXmanual'));
+              xhr.send();
             }
             break;
           default:
