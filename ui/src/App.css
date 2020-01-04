@@ -42,6 +42,10 @@ div.terminal {
 .background {
   position:absolute;
 }
+.leftbound {
+  position: absolute;
+  left:150px;
+}
 .configsection {
   top:600px;
   left:0px;

@@ -79,7 +79,7 @@ class Configuration extends React.Component {
 
     render() {
       return (
-        <form>
+        <form class="leftbound">
           <label class="marginRight">
             Driver Robot:
             <input
