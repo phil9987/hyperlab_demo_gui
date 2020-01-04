@@ -8,8 +8,8 @@ class Configuration extends React.Component {
         robot2: true,
         robot1: true,
         robot3: true,
-        manual2: false,
-        manual3: false,
+        manual2: true,
+        manual3: true,
       };
 
       this.yggdrasilUrl = 'http://localhost:8080';
@@ -109,6 +109,37 @@ class Configuration extends React.Component {
       requestObj.send();
     }
 
+    updateWorkspace() {
+      var request = new XMLHttpRequest();
+      const url = this.constructUrl('/workspaces');
+      var payload = `@prefix eve: <http://w3id.org/eve#> .
+      <>
+          a eve:Workspace;
+          eve:hasName "interactionsWksp";`
+      if (this.state.robot1) {
+        payload +=  `
+        eve:contains <http://localhost:8080/artifacts/robot1>;`;
+      }
+      if (this.state.robot2) {
+        payload += `
+        eve:contains <http://localhost:8080/artifacts/robot2>;`;
+      }
+      if (this.state.robot3) {
+        payload += `
+        eve:contains <http://localhost:8080/artifacts/robot3>;`;
+      }
+      if (this.state.manual3) {
+        payload += `
+        eve:contains <http://localhost:8080/manuals/phantomXmanual>`;
+      }
+      payload += '.';
+      console.log("sending payload: " + payload);
+      request.open('POST', url);
+      request.setRequestHeader('content-type', 'text/turtle');
+      request.setRequestHeader('slug', 'interactionsWksp');
+      request.send(payload);
+    }
+
     constructUrl(relativePath) {
         return this.yggdrasilUrl + relativePath;
     }
@@ -132,32 +163,41 @@ class Configuration extends React.Component {
       switch (name_) {
           case 'robot1':
             if (value) {
-                // activate robot1
-                // TODO: also activate corresponding manuals?
-                // open the request with the verb and the url
-                this.createRobot(xhr, 1);
+                // activate robot1 (doesn't have a manual)
+                this.createRobot(xhr, 1, false);
             } else {
                 // deactivate robot1
-                // TODO: also deactivate manuals
                 this.removeRobot(xhr, 1);
             }
               break;
           case 'robot2':
             if (value) {
               // activate robot2
-              this.createRobot(xhr, 2);
+              this.createRobot(xhr, 2, true);
+              this.setState({
+                manual2: true
+              })
             } else {
               // deactivate robot2
               this.removeRobot(xhr, 2);
+              this.setState({
+                manual2: false
+              })
             }
             break;
           case 'robot3':
             if (value) {
               // activate robot3
-              this.createRobot(xhr, 3);
+              this.createRobot(xhr, 3, true);
+              this.setState({
+                manual3: true
+              })
             } else {
               // deactivate robot3
               this.removeRobot(xhr, 3);
+              this.setState({
+                manual3: false
+              })
             }
             break;
           default:
@@ -166,6 +206,10 @@ class Configuration extends React.Component {
 
       this.setState({
         [name_]: value
+      }, function() {
+        console.log("state is updated, updating workspace " + value);
+        console.log(this.state)
+        this.updateWorkspace();
       });
     }
 
