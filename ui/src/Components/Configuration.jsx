@@ -17,7 +17,13 @@ class Configuration extends React.Component {
       this.handleInputChange = this.handleInputChange.bind(this);
     }
 
-    updateRobot2(requestObj, withManual) {
+    updateRobot2(withManual) {
+      var requestObj = new XMLHttpRequest();
+      // get a callback when the server responds
+      requestObj.addEventListener('load', () => {
+          console.log("Received response from Yggdrasil:")
+          console.log(requestObj.responseText)
+        });
       const url = this.constructUrl('/artifacts/robot2');
       var payload = `@prefix eve: <http://w3id.org/eve#> .
 
@@ -179,6 +185,53 @@ class Configuration extends React.Component {
         return this.yggdrasilUrl + relativePath;
     }
 
+    changeManual(name_, active, updateRobot) {
+      // send info to jacamo
+      const jsonObj = {jacamo: {changeManual: {name: name_, enabled: active}}};
+      this.ws.send(JSON.stringify(jsonObj));
+
+      // send info to yggdrasil
+      if (name_ === 'manual2') {
+        this.setState({
+          manual2: active
+        });
+        if (updateRobot) {
+          this.updateRobot2(active);
+        }
+      } else if (name_ === 'manual3') {
+        // manual3
+        this.setState({
+          manual3: active
+        });
+        var xhr = new XMLHttpRequest();
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            console.log("Received response from Yggdrasil:")
+            console.log(xhr.responseText)
+          });
+        if (active) {
+          const payload = `@prefix eve: <http://w3id.org/eve#> .
+
+          <http://localhost:8080/manuals/phantomXmanual> a eve:Manual ;
+              eve:hasName "phantomXmanual" ;
+              eve:explains <http://localhost:8080/artifacts/robot3> ;
+              eve:hasUsageProtocol [
+                eve:hasName "deliver" ;
+                eve:hasFunction "pickAndPlace(D1,D2)" ;
+                eve:hasPrecondition "true" ;
+                eve:hasBody " -+rotating(\\"Robot3\\",D1); -+grasping(\\"Robot3\\"); -+rotating(\\"Robot3\\",D2); -+releasing(\\"Robot3\\") "
+              ] .`;
+          xhr.open('POST', this.constructUrl('/manuals'));
+          xhr.setRequestHeader('content-type', 'text/turtle');
+          xhr.setRequestHeader('slug', 'phantomXmanual');
+          xhr.send(payload)
+        } else {
+          xhr.open('DELETE', this.constructUrl('/manuals/phantomXmanual'));
+          xhr.send();
+        }
+      }
+    }
+
     handleInputChange(event) {
       const target = event.target;
       const value = target.checked;
@@ -204,75 +257,37 @@ class Configuration extends React.Component {
           case 'robot1':
             if (value) {
                 // activate robot1 (doesn't have a manual)
-                this.createRobot(xhr, 1, false);
+                this.createRobot(xhr, 1);
             } else {
                 // deactivate robot1
                 this.removeRobot(xhr, 1);
             }
               break;
           case 'robot2':
+            this.changeManual('manual2', value);
             if (value) {
               // activate robot2
-              this.createRobot(xhr, 2, true);
-              this.setState({
-                manual2: true
-              })
+              this.createRobot(xhr, 2);
             } else {
               // deactivate robot2
               this.removeRobot(xhr, 2);
-              this.setState({
-                manual2: false
-              })
             }
             break;
           case 'robot3':
+            this.changeManual('manual3', value);
             if (value) {
               // activate robot3
-              this.createRobot(xhr, 3, true);
-              this.setState({
-                manual3: true
-              })
+              this.createRobot(xhr, 3);
             } else {
               // deactivate robot3
               this.removeRobot(xhr, 3);
-              this.setState({
-                manual3: false
-              })
             }
             break;
           case 'manual2':
-            if (value) {
-              // activate manual2
-              this.updateRobot2(xhr, true);
-            } else {
-              // deactivate manual2
-              this.updateRobot2(xhr, false);
-            }
+            this.changeManual(name_, value, true);
             break;
           case 'manual3':
-            if (value) {
-              // activate manual3
-              const payload = `@prefix eve: <http://w3id.org/eve#> .
-
-              <http://localhost:8080/manuals/phantomXmanual> a eve:Manual ;
-                  eve:hasName "phantomXmanual" ;
-                  eve:explains <http://localhost:8080/artifacts/robot3> ;
-                  eve:hasUsageProtocol [
-                    eve:hasName "deliver" ;
-                    eve:hasFunction "pickAndPlace(D1,D2)" ;
-                    eve:hasPrecondition "true" ;
-                    eve:hasBody " -+rotating(\\"Robot3\\",D1); -+grasping(\\"Robot3\\"); -+rotating(\\"Robot3\\",D2); -+releasing(\\"Robot3\\") "
-                  ] .`;
-              xhr.open('POST', this.constructUrl('/manuals'));
-              xhr.setRequestHeader('content-type', 'text/turtle');
-              xhr.setRequestHeader('slug', 'phantomXmanual');
-              xhr.send(payload)
-
-            } else {
-              // deactivate manual3
-              xhr.open('DELETE', this.constructUrl('/manuals/phantomXmanual'));
-              xhr.send();
-            }
+            this.changeManual(name_, value, false);
             break;
           default:
               console.log("unexpected name: " + name_);
