@@ -60,8 +60,8 @@ class Configuration extends React.Component {
         payload = `@prefix eve: <http://w3id.org/eve#> .
         <>
             a eve:Artifact ;
-            eve:hasName "robot1" ;
-            eve:isRobot "robot1" ;
+            eve:hasName "Robot1" ;
+            eve:isRobot "Robot1" ;
             eve:hasCartagoArtifact "www.Robot1" .`;
       } else if (robotNumber === 2) {
         payload = `@prefix eve: <http://w3id.org/eve#> .
