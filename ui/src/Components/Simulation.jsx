@@ -100,7 +100,7 @@ class Simulation extends React.Component {
      * Adds a log entry to the terminal
      */
     addTerminalLine(origin, message) {
-        const nextLine = origin + ': ' + message + '\n';
+        const nextLine = '[' + origin + ']: ' + message + '\n';
         this.setState({terminalText: this.state.terminalText + nextLine});
     }
 
