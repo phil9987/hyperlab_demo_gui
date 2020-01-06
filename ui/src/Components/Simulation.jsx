@@ -100,7 +100,7 @@ class Simulation extends React.Component {
      * Adds a log entry to the terminal
      */
     addTerminalLine(origin, message) {
-        const nextLine = origin + ': ' + message + '\n';
+        const nextLine = '[' + origin + ']: ' + message + '\n';
         this.setState({terminalText: this.state.terminalText + nextLine});
     }
 
@@ -337,7 +337,7 @@ class Simulation extends React.Component {
             <Robot robotImage={robotArmImg} centreX={this.state.robotArm2Pos.x}
                 centreY={this.state.robotArm2Pos.y} width={this.robotArmWidth}
                 height={this.robotArmHeight} rotation={this.state.robotArm2Rotation} />
-            <Terminal top={0} left={this.state.windowWidth} width={400} height={this.state.windowHeight} text={this.state.terminalText} />
+            <Terminal top={0} left={this.state.windowWidth} width={window.innerWidth - this.state.windowWidth} height={this.state.windowHeight} text={this.state.terminalText} />
         </div>
     }
 }
