@@ -184,7 +184,12 @@ class Configuration extends React.Component {
       const value = target.checked;
       const name_ = target.name;
 
-      const jsonObj = {jacamo: {changeArtifact: {name: name_, enabled: value}}};
+      var jsonObj;
+      if (name_.startsWith("manual")) {
+        jsonObj = {jacamo: {changeManual: {name: name_, enabled: value}}};
+      } else {
+        jsonObj = {jacamo: {changeArtifact: {name: name_, enabled: value}}};
+      }
       console.log("setting " + name_ + " enabled: " + value);
       this.ws.send(JSON.stringify(jsonObj)); // notifies jacamo app
       console.log('preparing request to yggdrasil...');
