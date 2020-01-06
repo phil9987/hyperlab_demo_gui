@@ -12,7 +12,7 @@ function Terminal(props) {
     return (
         <div className="terminal" style={bgStyle}>
             {props.text.split("\n").map((i,key) => {
-                return <div key={key}>{i}</div>;
+                return <div align="left" key={key}>{i}</div>;
             })}
         </div>
     );
