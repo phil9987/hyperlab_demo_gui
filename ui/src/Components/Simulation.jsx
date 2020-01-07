@@ -50,6 +50,8 @@ class Simulation extends React.Component {
         this.robotArmWidth = 120;
         this.robotArmHeight = 17;
         this.robotArmRotationStep = 0.05; // step in rad by which robotArm is moved per time interval
+
+        this.TerminalElement = React.createRef();
     }
 
     /*
@@ -102,6 +104,7 @@ class Simulation extends React.Component {
     addTerminalLine(origin, message) {
         const nextLine = '[' + origin + ']: ' + message + '\n';
         this.setState({terminalText: this.state.terminalText + nextLine});
+        this.TerminalElement.current.addLine(nextLine);
     }
 
     /*
@@ -337,7 +340,7 @@ class Simulation extends React.Component {
             <Robot robotImage={robotArmImg} centreX={this.state.robotArm2Pos.x}
                 centreY={this.state.robotArm2Pos.y} width={this.robotArmWidth}
                 height={this.robotArmHeight} rotation={this.state.robotArm2Rotation} />
-            <Terminal top={0} left={this.state.windowWidth} width={window.innerWidth - this.state.windowWidth} height={this.state.windowHeight} text={this.state.terminalText} />
+            <Terminal ref={this.TerminalElement} top={0} left={this.state.windowWidth} width={window.innerWidth - this.state.windowWidth} height={this.state.windowHeight} text={this.state.terminalText} />
         </div>
     }
 }
