@@ -6,6 +6,7 @@ A websocket connection to the websocket server from the jacamo app in `jacamo-ap
 ## API: Jacamo → GUI
 ### Robotarm (robot1 and robot3)
 `{robotX: {rotate: {degrees: 180}}}` // rotates robot arm to given degree value
+
 `{robotX: {grasp: true/false}}` // grasps / releases robot arm
 
 ### TransporterRobot (robot2)
