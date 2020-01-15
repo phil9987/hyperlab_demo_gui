@@ -15,7 +15,7 @@ A websocket connection to the websocket server from the jacamo app in `jacamo-ap
 {robot2: {release: true}} // releases an either loaded or attached ball. In the UI nothing changes except that if move is called, the ball will not move with robot2.
 
 ### Terminal
-{terminal: {origin: msg_origin, message: "message to be logged"} // logs a message in the format "[<origin>]: <message>" to the terminal on the right side of the GUI
+{terminal: {origin: msg_origin, message: "message to be logged"} // logs a message in the format `"[<origin>]: <message>"` to the terminal on the right side of the GUI
 
 ## API Jacamo ← GUI
 {jacamo: {placeObject: {x: x_coordinate, y: y_coordinate}}} // Event: ball has been placed in the UI at given coordinates
