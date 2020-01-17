@@ -10,7 +10,7 @@ import Configuration from './Configuration';
 
 class Simulation extends React.Component {
     // The websocket used to communicate with the GUI backend and the Jacamo application
-    ws = new WebSocket('ws://localhost:40510')
+    ws = new WebSocket('ws://localhost:8080')
 
     constructor(props) {
         super(props);

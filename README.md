@@ -1,7 +1,5 @@
 # UI for hyperlab
-This react UI is served using express.js which establishes a websocket connection to the UI. The server then accepts requests which can trigger UI interactions.
-The server runs on port 5000.
-A websocket connection to the websocket server from the jacamo app in `jacamo-app/src/env/www/ShopFloorMap.java`
+This react UI tries to open a websocket connection to Yggdrasil which is running on localhost:8080 which forwards messages back and forth to the Jacamo app (entry point: `jacamo-app/src/env/www/ShopFloorMap.java`)
 
 ## API: Jacamo → GUI
 ### Robotarm (robot1 and robot3)
@@ -30,8 +28,8 @@ A websocket connection to the websocket server from the jacamo app in `jacamo-ap
 
 ## build and run
 ~~~
-cd ui
 npm run build
-cd ..
-npm start
+copy content of build folder into yggdrasil/src/main/resources/webroot
+build and start yggdrasil with the command mentioned in the README of the yggdrasil repository
+access the UI on http://localhost:8080/gui
 ~~~
