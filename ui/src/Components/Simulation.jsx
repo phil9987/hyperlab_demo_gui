@@ -217,6 +217,13 @@ class Simulation extends React.Component {
                             driverBallLoaded: false,
                             driverBallAttached: false
                         })
+                        if (Math.abs(this.state.driverPos.x-this.ballDestination.x) <= 20 && Math.abs(this.state.driverPos.y-this.ballDestination.y) <= 20) {
+                                // we reached the destination
+                                console.log("Ball has reached destination!");
+                                this.setState({
+                                    ballPos: this.ballDestination
+                                });
+                            }
                         break
                     default:
                         console.log("unable to process json message: " + message);
